@@ -10,18 +10,18 @@ Join (left, right, output) = msg: {
   # sender always refers to sender of msg
   # self always refers to current actor this handler is run for
   match sender {
-    case left { output <- msg }
-    case right { output <- msg }
+    left { output <- msg }
+    right { output <- msg }
     # match all
-    case _ { println <- ("Invalid sender: ", sender) }
+    _ { println <- ("Invalid sender: ", sender) }
   }
 }
 
 Count (max, block) = msg: {
   match msg {
     # partial blocks as in fancy
-    case @{ <= 0 } { die! }
-    case _ {
+    @{ <= 0 } { die! }
+    _ {
       block <- msg
       become (max - 1, block) # only change state for next message, not handler
     }
@@ -39,8 +39,8 @@ DoEach (block) = enum: {
     # since the (x, y) pattern only matches non-empty lists
     # any other messages get ignored (deleted).
     # but if you'd want an actor to die, simply do so:
-    # case () { die! }
-    case (x, y) {
+    # () { die! }
+    (x, y) {
       block <- x
       self <- y
     }
@@ -49,7 +49,7 @@ DoEach (block) = enum: {
 
 Map (target, block) = enum: {
   match enum {
-    case (x, y) {
+    (x, y) {
       (block <- x) -> f # save reply of (block <- x) in f (a future)
       self <- y
       target <- @f # explicitly dereference f (a future) - blocks if not fully computed yet
@@ -59,7 +59,7 @@ Map (target, block) = enum: {
 
 Dispatcher (target, actor) = enum: {
   match enum {
-    case (x, y) {
+    (x, y) {
       # register callback for future returned by (actor <- x) message send
       with (actor <- x) val: {
         target <- val
@@ -111,7 +111,7 @@ Future {
   # e.g. this is the same as: Future:Waiting (waiting) = msg: { ...
   Waiting (waiting) = msg: {
     match msg {
-      case ('write, val) {
+      ('write, val) {
         become Value(val)
         reply self
         @Broadcast:Value(val) <- waiting
@@ -125,9 +125,9 @@ Future {
   # which is the same as this:
   Value (val) = msg: {
     match msg {
-      case ('read) { reply val}
+      ('read) { reply val}
       # and this could be written as follows too:
-      case 'read { reply val }
+      'read { reply val }
     }
   }
 
@@ -135,10 +135,10 @@ Future {
   # Future () = msg: { ...
   () = msg: {
     match msg {
-      case ('write, val) {
+      ('write, val) {
         become Future:Value(val)
       }
-      case 'read {
+      'read {
         become Future:Waiting([sender])
       }
     }

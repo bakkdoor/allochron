@@ -1,9 +1,9 @@
 If (condition, func) = msg: {
   match condition {
-    case nil | false {
+    nil | false {
       become Future(nil)
     }
-    case _ {
+    _ {
       become Future(func <- condition)
     }
   }
@@ -12,10 +12,10 @@ If (condition, func) = msg: {
 
 IfElse (condition, then_func, else_func) = msg: {
   match condition {
-    case nil | false {
+    nil | false {
       become Future(else_func <- ())
     }
-    case _ {
+    _ {
       become Future(then_func <- condition)
     }
   }

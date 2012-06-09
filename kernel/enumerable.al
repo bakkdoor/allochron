@@ -7,7 +7,7 @@ Enumerable {
       # any other messages get ignored (deleted).
       # but if you'd want an actor to die, simply do so:
       # case () { die! }
-      case (x, y) {
+      (x, y) {
         func <- x
         self <- y
       }
@@ -23,10 +23,10 @@ Enumerable {
 
   Mapper (target, func, mapped=()) = list: {
     match list {
-      case (x, y) {
+      (x, y) {
         become (target, func, (func <- x, mapped))
       }
-      case _ {
+      _ {
         target <- mapped
         become (target, func) # restores mapped to default (empty list)
       }

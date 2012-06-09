@@ -5,7 +5,7 @@ Future {
   # e.g. this is the same as: Future:Waiting (waiting) = msg: { ...
   Waiting (waiting) = msg: {
     match msg {
-      case ('write, val) {
+      ('write, val) {
         become Value(val)
         reply self
         @Broadcast:Value(val) <- waiting
@@ -19,9 +19,9 @@ Future {
   # which is the same as this:
   Value (val) = msg: {
     match msg {
-      case ('read) { reply val}
+      ('read) { reply val}
       # and this could be written as follows too:
-      case 'read { reply val }
+      'read { reply val }
     }
   }
 
@@ -29,10 +29,10 @@ Future {
   # Future () = msg: { ...
   () = msg: {
     match msg {
-      case ('write, val) {
+      ('write, val) {
         become Future:Value(val)
       }
-      case 'read {
+      'read {
         become Future:Waiting([sender])
       }
     }
