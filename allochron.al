@@ -116,6 +116,9 @@ Future {
         reply self
         @Broadcast:Value(val) <- waiting
       }
+      'read {
+        become Waiting((sender, waiting))
+      }
     }
   }
 
